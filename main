@@ -4,19 +4,19 @@
 
 class Tree {
 private:
-	class S {
+	class Node {
 	private:
 		std::string Word; /* Английское слово */
 		std::string Translation; /* Перевод данного слова */
-		S* left;
-		S* right; /* соответсвенно сылки на следующие элементы бинарного дерева*/
+		Node* left;
+		Node* right; /* соответсвенно сылки на следующие элементы бинарного дерева*/
 	public:
-		S(std::string eng, std::string rus) : Word(eng), Translation(rus), left(NULL), right(NULL) {}; /* "Ячейка" дерева*/
+		Node(std::string eng, std::string rus) : Word(eng), Translation(rus), left(NULL), right(NULL) {}; /* "Ячейка" дерева*/
 		void Insert(std::string eng, std::string rus) { /* Функция добаления слова */
 			if (eng > Word && right) right->Insert(eng, rus);
-			else if (eng > Word && !right) right = new S(eng, rus);
+			else if (eng > Word && !right) right = new Node(eng, rus);
 			else if (eng < Word&&left) left->Insert(eng, rus);
-			else left = new S(eng, rus);
+			else left = new Node(eng, rus);
 		}
 		void Print() { /* Печать дерева */
 			if (left) left->Print();
@@ -41,7 +41,7 @@ private:
 			else if ((eng!=Word)&(right==NULL)&(left==NULL) ) std::cout << "Введенного слова нет в словаре" << "\n";
 		}
 	};
-	S* Root;
+	Node* Root;
 public:
 	Tree() :Root(NULL) {};
 	void Insert(std::string, std::string); /* Объявление функций класса */
@@ -50,7 +50,7 @@ public:
 };
 
 void Tree::Insert(std::string eng, std::string rus) {
-	if (!Root) Root = new S(eng, rus);
+	if (!Root) Root = new Node(eng, rus);
 	else Root->Insert(eng, rus);
 }
 
