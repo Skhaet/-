@@ -1,0 +1,108 @@
+#include <string>
+#include <iostream>
+#include<windows.h>
+
+class Tree {
+private:
+	class S {
+	private:
+		std::string Word; /* Английское слово */
+		std::string Translation; /* Перевод данного слова */
+		S* left;
+		S* right; /* соответсвенно сылки на следующие элементы бинарного дерева*/
+	public:
+		S(std::string eng, std::string rus) : Word(eng), Translation(rus), left(NULL), right(NULL) {}; /* "Ячейка" дерева*/
+		void Insert(std::string eng, std::string rus) { /* Функция добаления слова */
+			if (eng > Word && right) right->Insert(eng, rus);
+			else if (eng > Word && !right) right = new S(eng, rus);
+			else if (eng < Word&&left) left->Insert(eng, rus);
+			else left = new S(eng, rus);
+		}
+		void Print() { /* Печать дерева */
+			if (left) left->Print();
+			std::cout << Word << " - " << Translation << "\n";
+			if (right) right->Print();
+		}
+		void Search(std::string eng) { /* Функция поиска и печати слова */
+			bool Availability = false;
+			if ((eng != Word)&(right == NULL)&(left == NULL)) std::cout << "Введенного слова нет в словаре" << "\n";
+			else if (eng == Word) {
+				Availability = true;
+				std::cout << Translation << "\n";
+			}
+			else if (eng > Word&&right) {
+				if (right != NULL) right->Search(eng);
+				else  std::cout << "Введенного слова нет в словаре" << "\n";
+			}
+			else if (eng < Word&&left) {
+				if (left != NULL) left->Search(eng);
+				else std::cout << "Введенного слова нет в словаре" << "\n";
+			}
+			else if ((eng!=Word)&(right==NULL)&(left==NULL) ) std::cout << "Введенного слова нет в словаре" << "\n";
+		}
+	};
+	S* Root;
+public:
+	Tree() :Root(NULL) {};
+	void Insert(std::string, std::string); /* Объявление функций класса */
+	void Print();
+	void Search(std::string);
+};
+
+void Tree::Insert(std::string eng, std::string rus) {
+	if (!Root) Root = new S(eng, rus);
+	else Root->Insert(eng, rus);
+}
+
+void Tree::Print() {
+	Root->Print();
+}
+
+void Tree::Search(std::string eng) {
+	Root->Search(eng);
+}
+
+int main() {
+	bool Check = true;
+	setlocale(LC_ALL, "Russian"); /* Поддержка руского текста в консоли */ /* КУДА ЕЩЕ ДОБАВИТЬ ЭТУ ШТУКУ ЧТОБЫ НОВЫЕ СЛОВА ТОЖЕ НОРМАЛЬНО ВЫВОДИЛИСЬ?*/
+	Tree Dictionary;
+	Dictionary.Insert("University", "Университет"); /* заполнение словаря "по умолчанию" */
+	Dictionary.Insert("Faculty", "Факультет");
+	Dictionary.Insert("Department", "Кафедра");
+	Dictionary.Insert("Programmer", "Программист");
+	Dictionary.Insert("Quarantine", "Карантин");
+	Dictionary.Insert("B", "Проверка выполнена");
+
+	while(Check) {
+		std::cout << "Вы используете англо-русский словарь, для работы выберете одно из следующийх действий" << "\n"; /* Пользовательский интерфейс */
+		std::cout << "1: Добавить слово в словарь" << "\n";
+		std::cout << "2: Найти перевод слова" << "\n";
+		std::cout << "3: Распечатать весь словарь" << "\n";
+		std::cout << "4: Завершить работу" << "\n";
+
+		int Choice;
+		std::string eng, rus;
+		std::cin >> Choice;
+		switch (Choice) {
+		case 1:
+			std::cout << "Введите слово на английском" << "\n";
+			std::cin >> eng;
+			std::cout << "Введите перевод" << "\n";
+			std::cin >> rus;
+			Dictionary.Insert(eng, rus);
+			break;
+		case 2:
+			std::cout << "Введите слово, перевод которого хотите найти\n";
+			std::cin >> eng;
+			Dictionary.Search(eng);
+			break;
+		case 3:
+			Dictionary.Print();
+			break;
+		case 4:
+			Check = false;
+			break;
+		}
+	}
+	return 0;
+}
